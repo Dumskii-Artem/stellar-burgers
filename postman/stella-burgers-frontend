@@ -1,0 +1,985 @@
+{
+	"info": {
+		"_postman_id": "196a4c90-bfca-4344-871d-602799671da9",
+		"name": "Stella-burgers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44239381"
+	},
+	"item": [
+		{
+			"name": "register_user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"const responseSchema = {\r",
+							"    type: \"object\",\r",
+							"    properties: {\r",
+							"        success: { type: \"boolean\" },\r",
+							"        user: {\r",
+							"            type: \"object\",\r",
+							"            properties: {\r",
+							"                email: { type: \"string\", format: \"email\" },\r",
+							"                name: { type: \"string\" }\r",
+							"            },\r",
+							"            required: [\"email\", \"name\"],\r",
+							"            additionalProperties: false\r",
+							"        },\r",
+							"        accessToken: { type: \"string\" },\r",
+							"        refreshToken: { type: \"string\" }\r",
+							"    },\r",
+							"    required: [\"success\", \"user\", \"accessToken\", \"refreshToken\"],\r",
+							"    additionalProperties: false\r",
+							"};\r",
+							"\r",
+							"// Тест на статус-код\r",
+							"pm.test(\"Статус-код ответа должен быть 200\", function () {\r",
+							"    pm.expect(\r",
+							"        pm.response.status,\r",
+							"        \"Убедитесь, что корректный запрос возвращает статус-код 200\"\r",
+							"    ).to.be.eql(\"OK\");\r",
+							"    \r",
+							"    // Сохраняем текущий пароль только если статус 200\r",
+							"    const currentPassword = pm.variables.get(\"my_password\");\r",
+							"    if (currentPassword) {\r",
+							"        pm.collectionVariables.set(\"my_current_password\", currentPassword);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"// Тест на структуру\r",
+							"pm.test(\"Структура ответа соответствует ожидаемой\", function () {\r",
+							"    pm.response.to.have.jsonSchema(responseSchema);\r",
+							"\r",
+							"    const accessToken = _.get(responseData, \"accessToken\");\r",
+							"    if (accessToken) {\r",
+							"        pm.collectionVariables.set(\"userAccessToken\", accessToken);\r",
+							"    }\r",
+							"\r",
+							"    const refreshToken = _.get(responseData, \"refreshToken\");\r",
+							"    if (refreshToken) {\r",
+							"        pm.collectionVariables.set(\"userRefreshToken\", refreshToken);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{my_email}}\",\r\n    \"name\": \"{{my_name}}\",\r\n    \"password\": \"{{my_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/register",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_authorisation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"const responseSchema = {\r",
+							"    type: \"object\",\r",
+							"    properties: {\r",
+							"        success: { type: \"boolean\" },\r",
+							"        user: {\r",
+							"            type: \"object\",\r",
+							"            properties: {\r",
+							"                email: { type: \"string\", format: \"email\" },\r",
+							"                name: { type: \"string\" }\r",
+							"            },\r",
+							"            required: [\"email\", \"name\"],\r",
+							"            additionalProperties: false\r",
+							"        },\r",
+							"        accessToken: { type: \"string\" },\r",
+							"        refreshToken: { type: \"string\" }\r",
+							"    },\r",
+							"    required: [\"success\", \"user\", \"accessToken\", \"refreshToken\"],\r",
+							"    additionalProperties: false\r",
+							"};\r",
+							"\r",
+							"// Проверка статуса\r",
+							"pm.test(\"Статус-код ответа должен быть 200\", function () {\r",
+							"    pm.expect(\r",
+							"        pm.response.status,\r",
+							"        \"Убедитесь, что корректный логин возвращает статус-код 200\"\r",
+							"    ).to.be.eql(\"OK\");\r",
+							"});\r",
+							"\r",
+							"// Проверка структуры ответа\r",
+							"pm.test(\"Структура ответа соответствует ожидаемой\", function () {\r",
+							"    pm.response.to.have.jsonSchema(responseSchema);\r",
+							"});\r",
+							"\r",
+							"// Проверка, что accessToken начинается с Bearer\r",
+							"pm.test(\"accessToken начинается с 'Bearer '\", function () {\r",
+							"    pm.expect(responseData.accessToken, \"accessToken должен начинаться с Bearer\")\r",
+							"        .to.match(/^Bearer\\s.+/);\r",
+							"});\r",
+							"\r",
+							"// Сохраняем токены в переменные коллекции\r",
+							"if (responseData.accessToken) {\r",
+							"    pm.collectionVariables.set(\"userAccessToken\", responseData.accessToken);\r",
+							"}\r",
+							"if (responseData.refreshToken) {\r",
+							"    pm.collectionVariables.set(\"userRefreshToken\", responseData.refreshToken);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{my_current_email}}\",\r\n    \"password\": \"{{my_current_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/login",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ask_password_reset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{my_email}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}password-reset",
+					"host": [
+						"{{API_URL}}password-reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reset_password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Статус-код 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит success: true\", () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.true;\r",
+							"});\r",
+							"\r",
+							"// Обновляем текущий пароль на новый при успешном сбросе\r",
+							"if (pm.response.json().success) {\r",
+							"    const newPass = pm.variables.get(\"my_new_password\");\r",
+							"    if (newPass) {\r",
+							"        pm.collectionVariables.set(\"my_current_password\", newPass);\r",
+							"    }\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\":\"{{my_new_password}}\",\r\n    \"token\":\"{{token_from_mail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}password-reset/reset",
+					"host": [
+						"{{API_URL}}password-reset"
+					],
+					"path": [
+						"reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/user",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change_user_name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Статус-код ответа должен быть 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит success: true и user с именем\", function () {\r",
+							"    pm.expect(responseData).to.have.property(\"success\", true);\r",
+							"    pm.expect(responseData).to.have.property(\"user\");\r",
+							"    pm.expect(responseData.user).to.have.property(\"name\");\r",
+							"\r",
+							"    const currentName = responseData.user.name;\r",
+							"    if (currentName) {\r",
+							"        pm.collectionVariables.set(\"my_current_name\", currentName);\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"{{my_another_name}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/user",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change_user_password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Статус-код ответа должен быть 200 и пароль сохранён\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"    const newPassword = pm.variables.get(\"my_new_password\");\r",
+							"    if (newPassword) {\r",
+							"        pm.collectionVariables.set(\"my_current_password\", newPassword);\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\":\"{{my_new_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/user",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change_user_email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Статус-код ответа должен быть 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит success: true и user с email\", function () {\r",
+							"    pm.expect(responseData).to.have.property(\"success\", true);\r",
+							"    pm.expect(responseData).to.have.property(\"user\");\r",
+							"    pm.expect(responseData.user).to.have.property(\"email\");\r",
+							"\r",
+							"    if (pm.response.code === 200) {\r",
+							"        const currentEmail = responseData.user.email;\r",
+							"        if (currentEmail) {\r",
+							"            pm.collectionVariables.set(\"my_current_email\", currentEmail);\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{my_another_email}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/user",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change_all_user_data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Статус-код ответа должен быть 200 и данные сохранены\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"\r",
+							"    const password = pm.variables.get(\"my_password\");\r",
+							"    const email = pm.variables.get(\"my_email\");\r",
+							"    const name = pm.variables.get(\"my_name\");\r",
+							"\r",
+							"    if (password) {\r",
+							"        pm.collectionVariables.set(\"my_current_password\", password);\r",
+							"    }\r",
+							"    if (email) {\r",
+							"        pm.collectionVariables.set(\"my_current_email\", email);\r",
+							"    }\r",
+							"    if (name) {\r",
+							"        pm.collectionVariables.set(\"my_current_name\", name);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\":\"{{my_password}}\",\r\n    \"email\":\"{{my_email}}\",\r\n    \"name\":\"{{my_name}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/user",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh_token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Статус-код должен быть 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит новые токены и success:true\", () => {\r",
+							"    pm.expect(responseData.success).to.be.true;\r",
+							"    pm.expect(responseData.accessToken).to.be.a(\"string\");\r",
+							"    pm.expect(responseData.refreshToken).to.be.a(\"string\");\r",
+							"\r",
+							"    // Сохраняем новые токены в коллекционные переменные\r",
+							"    pm.collectionVariables.set(\"userAccessToken\", responseData.accessToken);\r",
+							"    pm.collectionVariables.set(\"userRefreshToken\", responseData.refreshToken);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\":\"{{userRefreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/token",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Статус 200 и успешный выход\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"  const data = pm.response.json();\r",
+							"  pm.expect(data.success).to.eql(true);\r",
+							"\r",
+							"  if (data.success === true) {\r",
+							"    pm.collectionVariables.unset(\"userAccessToken\");\r",
+							"    pm.collectionVariables.unset(\"userRefreshToken\");\r",
+							"  }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\":\"{{userRefreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}auth/logout",
+					"host": [
+						"{{API_URL}}auth"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ingredients_list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.environment.get(\"baseUrl\") + \"/ingredients\", function (err, res) {\r",
+							"    if (err || !res) {\r",
+							"        console.error(\"Ошибка запроса ингредиентов:\", err);\r",
+							"        return;\r",
+							"    }\r",
+							"    const data = res.json();\r",
+							"\r",
+							"    if (!data.success || !data.data) {\r",
+							"        console.error(\"Некорректный ответ ингредиентов\");\r",
+							"        return;\r",
+							"    }\r",
+							"\r",
+							"    const buns = data.data.filter(i => i.type === \"bun\");\r",
+							"    const sauces = data.data.filter(i => i.type === \"sauce\");\r",
+							"    const mains = data.data.filter(i => i.type === \"main\");\r",
+							"\r",
+							"    const selectSecondOrFirst = (arr) => (arr.length > 1 ? arr[1]._id : (arr.length > 0 ? arr[0]._id : null));\r",
+							"\r",
+							"    const selectedBun = selectSecondOrFirst(buns);\r",
+							"    const selectedSauce = selectSecondOrFirst(sauces);\r",
+							"    const selectedMain = selectSecondOrFirst(mains);\r",
+							"\r",
+							"    if (selectedBun) pm.environment.set(\"selectedBunId\", selectedBun);\r",
+							"    if (selectedSauce) pm.environment.set(\"selectedSauceId\", selectedSauce);\r",
+							"    if (selectedMain) pm.environment.set(\"selectedMainId\", selectedMain);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\":\"main\"\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}ingredients",
+					"host": [
+						"{{API_URL}}ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_alien_orders_list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"if (responseData.success && Array.isArray(responseData.orders) && responseData.orders.length > 0) {\r",
+							"    const firstOrderNumber = responseData.orders[0].number;\r",
+							"    if (firstOrderNumber) {\r",
+							"        pm.collectionVariables.set(\"first_order_number\", firstOrderNumber);\r",
+							"        console.log(\"Сохранён first_order_number в коллекцию:\", firstOrderNumber);\r",
+							"    } else {\r",
+							"        console.warn(\"Поле _id в первом заказе отсутствует\");\r",
+							"    }\r",
+							"} else {\r",
+							"    console.warn(\"Массив orders пуст или отсутствует\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{API_URL}}orders/all",
+					"host": [
+						"{{API_URL}}orders"
+					],
+					"path": [
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_my_orders",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{API_URL}}orders",
+					"host": [
+						"{{API_URL}}orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "my_new_order",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.collectionVariables.get(\"API_URL\") + \"ingredients\", function (err, res) {\r",
+							"    if (err || !res) {\r",
+							"        console.error(\"Ошибка запроса ингредиентов:\", err);\r",
+							"        return;\r",
+							"    }\r",
+							"    const data = res.json();\r",
+							"\r",
+							"    if (!data.success || !data.data) {\r",
+							"        console.error(\"Некорректный ответ ингредиентов\");\r",
+							"        return;\r",
+							"    }\r",
+							"\r",
+							"    const buns = data.data.filter(i => i.type === \"bun\");\r",
+							"    const sauces = data.data.filter(i => i.type === \"sauce\");\r",
+							"    const mains = data.data.filter(i => i.type === \"main\");\r",
+							"\r",
+							"    const selectSecondOrFirst = (arr) => (arr.length > 1 ? arr[1]._id : (arr.length > 0 ? arr[0]._id : null));\r",
+							"\r",
+							"    const selectedBun = selectSecondOrFirst(buns);\r",
+							"    const selectedSauce = selectSecondOrFirst(sauces);\r",
+							"    const selectedMain = selectSecondOrFirst(mains);\r",
+							"\r",
+							"    if (selectedBun) pm.environment.set(\"selectedBunId\", selectedBun);\r",
+							"    if (selectedSauce) pm.environment.set(\"selectedSauceId\", selectedSauce);\r",
+							"    if (selectedMain) pm.environment.set(\"selectedMainId\", selectedMain);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ingredients\": [\r\n        \"643d69a5c3f7b9001cfa093d\",\r\n        \"643d69a5c3f7b9001cfa093e\",\r\n        \"643d69a5c3f7b9001cfa093d\"\r\n    ]    \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}orders",
+					"host": [
+						"{{API_URL}}orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_order_by_number",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}orders/{{first_order_number}}",
+					"host": [
+						"{{API_URL}}orders"
+					],
+					"path": [
+						"{{first_order_number}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "https://norma.nomoreparties.space/api/",
+			"type": "string"
+		},
+		{
+			"key": "my_email",
+			"value": "artem2222@mail.ru",
+			"type": "string"
+		},
+		{
+			"key": "my_name",
+			"value": "Artem2222",
+			"type": "string"
+		},
+		{
+			"key": "my_password",
+			"value": "123456789",
+			"type": "string"
+		},
+		{
+			"key": "token_from_mail",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "my_new_password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "my_current_password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "my_another_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "my_current_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "my_another_email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "my_current_email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "first_order_number",
+			"value": ""
+		},
+		{
+			"key": "userAccessToken",
+			"value": ""
+		},
+		{
+			"key": "userRefreshToken",
+			"value": ""
+		}
+	]
+}
