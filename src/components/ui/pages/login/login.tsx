@@ -36,7 +36,7 @@ export const LoginUI: FC<LoginUIProps> = ({
               errorText=''
               size='default'
               onPointerEnterCapture={() => {}}
-              onPointerLeaveCapture={() => {}}          
+              onPointerLeaveCapture={() => {}}
             />
           </div>
           <div className='pb-6'>

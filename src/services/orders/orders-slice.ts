@@ -1,64 +1,85 @@
 // src\services\orders\orders-slice.ts
 
-import { createSlice } from "@reduxjs/toolkit";
-import { TOrder } from "@utils-types";
-
+import { createSlice } from '@reduxjs/toolkit';
+import { TOrder } from '@utils-types';
 
 export interface OrderState {
-    feed: {
-        total: number;
-        totalToday: number;
-        orders: TOrder[];
-        isLoading: boolean;
-        error: string | undefined;
-    };
-    userOrders:{
-        orders: TOrder[];
-        isLoading: boolean;
-        error: string | undefined;
-    };
-    orderByNumber: {
-        order: TOrder | null;
-        isLoading: boolean;
-        error: string | undefined;
-    };
+  feed: {
+    total: number;
+    totalToday: number;
+    orders: TOrder[];
+    isLoading: boolean;
+    error: string | undefined;
+  };
+  userOrders: {
+    orders: TOrder[];
+    isLoading: boolean;
+    error: string | undefined;
+  };
+  orderByNumber: {
+    order: TOrder | null;
+    isLoading: boolean;
+    error: string | undefined;
+  };
+  newOrder: {
+    order: TOrder | null;
+    name: string;
+  };
+  orderRequest: boolean;
 }
 
 const initialState: OrderState = {
-    feed: {
-        total: 0,
-        totalToday: 0,
-        orders: [],
-        isLoading: false,
-        error: undefined
-    },
-    userOrders:{
-        orders: [],
-        isLoading: false,
-        error: undefined
-    },
-    orderByNumber: {
-        order: null,
-        isLoading: false,
-        error: undefined
-    }
-}
+  feed: {
+    total: 0,
+    totalToday: 0,
+    orders: [],
+    isLoading: false,
+    error: undefined
+  },
+  userOrders: {
+    orders: [],
+    isLoading: false,
+    error: undefined
+  },
+  orderByNumber: {
+    order: null,
+    isLoading: false,
+    error: undefined
+  },
+  newOrder: {
+    order: null,
+    name: ''
+  },
+  orderRequest: false
+};
 
 export const ordersSlice = createSlice({
-    name: 'orders',
-    initialState,
-    reducers: {}
-})
-
+  name: 'orders',
+  initialState,
+  reducers: {},
+  selectors: {
+    // selectOrders: (state) => state.orders,
+    // selectOrderByNumber: (state) => state.orderByNumber,
+    // selectFeed: (state) => state.feed,
+    selectNewOrder: (state) => state.newOrder,
+    selectOrderRequest: (state) => state.orderRequest
+    // selectUserOrders: (state) => state.userOrders
+  }
+});
 
 // export const { addIngredient, removeIngredient, clearConstructor } =
 //   constructorSlice.actions;
 
+export const {
+  //   selectOrders,
+  //   selectOrderByNumber,
+  //   selectFeed,
+  selectNewOrder,
+  selectOrderRequest
+  //   selectUserOrders
+} = ordersSlice.selectors;
+
 export const ordersReducer = ordersSlice.reducer;
-
-
-
-
 
 // import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
 // import { TConstructorIngredient, TIngredient } from '@utils-types';
@@ -92,14 +113,9 @@ export const ordersReducer = ordersSlice.reducer;
 //       }
 //     },
 
-
-
-    
 //     // setBun(state, action: PayloadAction<TConstructorIngredient>) {
 //     //   state.bun = action.payload;
 //     // },
-
-
 
 //     removeIngredient(state, action: PayloadAction<string>) {
 //       state.ingredients = state.ingredients.filter(

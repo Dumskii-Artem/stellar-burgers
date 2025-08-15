@@ -42,7 +42,7 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
             errorText=''
             size='default'
             onPointerEnterCapture={() => {}}
-            onPointerLeaveCapture={() => {}}          
+            onPointerLeaveCapture={() => {}}
           />
         </div>
         <div className={`pb-6 ${styles.button}`}>

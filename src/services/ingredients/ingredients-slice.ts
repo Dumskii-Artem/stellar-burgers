@@ -1,15 +1,14 @@
 // src\services\ingredients\ingredients-slice.ts
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getIngredientsApi } from "../../utils/burger-api";
-import { TIngredient } from "../../utils/types";
-
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getIngredientsApi } from '../../utils/burger-api';
+import { TIngredient } from '../../utils/types';
 
 interface IngredientsState {
   ingredients: TIngredient[];
   loading: boolean;
   error: string | null;
-};
+}
 
 const initialState: IngredientsState = {
   ingredients: [],
@@ -18,19 +17,19 @@ const initialState: IngredientsState = {
 };
 
 export const fetchIngredients = createAsyncThunk(
-  "ingredients/fetchIngredients",
+  'ingredients/fetchIngredients',
   async (_, { rejectWithValue }) => {
     try {
       const ingredients = await getIngredientsApi();
       return ingredients; // уже массив TIngredient[]
     } catch (err: any) {
-      return rejectWithValue(err.message || "Ошибка загрузки ингредиентов");
+      return rejectWithValue(err.message || 'Ошибка загрузки ингредиентов');
     }
   }
 );
 
 export const ingredientsSlice = createSlice({
-  name: "ingredients",
+  name: 'ingredients',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

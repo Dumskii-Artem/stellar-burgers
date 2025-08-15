@@ -1,7 +1,6 @@
 // src\services\user\user-slice.ts
-
-import { createSlice } from "@reduxjs/toolkit";
-import { TUser } from "@utils-types";
+import { createSlice } from '@reduxjs/toolkit';
+import { TUser } from '@utils-types';
 
 export interface UserState {
   user: TUser | null;
@@ -22,8 +21,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {}
-})
-
+});
 
 // export const { userSelector, isAuthCheckedSelector } = userSlice.selectors;
 // export const { setUser } = userSlice.actions;

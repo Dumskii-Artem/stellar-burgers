@@ -8,12 +8,15 @@ interface ProtectedRouteProps {
   onlyUnAuth?: boolean; // флаг, нужен ли доступ только неавторизованным
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({children,onlyUnAuth = false}) => {
-  // Позже тут будет логика проверки авторизации:
-  // const isAuth = useSelector((state) => state.user.isAuth);
-  // if (!isAuth) return <Navigate to="/login" replace />;
-
-  return children;
-};
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  onlyUnAuth = false
+}) => children;
+// {
+//   //   // Позже тут будет логика проверки авторизации:
+//   //   // const isAuth = useSelector((state) => state.user.isAuth);
+//   //   // if (!isAuth) return <Navigate to="/login" replace />;
+//   return children;
+// };
 
 // export default ProtectedRoute;

@@ -23,10 +23,9 @@ export const initialState: ConstructorState = {
 };
 
 export const constructorSlice = createSlice({
-  name: 'constructor',
+  name: 'myconstructor',
   initialState,
   reducers: {
-
     addIngredient: {
       reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
         if (action.payload.type === 'bun') {
@@ -42,17 +41,19 @@ export const constructorSlice = createSlice({
     },
 
     removeIngredient(state, action: PayloadAction<string>) {
-      state.burger.ingredients = state.burger.ingredients.filter((ing) => ing._id !== action.payload);
+      state.burger.ingredients = state.burger.ingredients.filter(
+        (ing) => ing._id !== action.payload
+      );
     },
 
     clearConstructor(state) {
       state.burger.bun = null;
       state.burger.ingredients = [];
-    },
+    }
   },
   selectors: {
     selectBurgerConstructor: (state) => state.burger
-  }  
+  }
 });
 export const { selectBurgerConstructor } = constructorSlice.selectors;
 
