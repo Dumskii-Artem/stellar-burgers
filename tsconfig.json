@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -25,7 +25,9 @@
       "@utils-types": ["src/utils/types"],
       "@api": ["src/utils/burger-api.ts"],
       "@slices": ["src/services/slices"],
-      "@selectors": ["src/services/selectors"]
+      "@selectors": ["src/services/selectors"],
+      "@store": ["src/services/store"],
+      "@reducers/*": ["src/services/reducers/*"]
     }
   },
   "include": ["src"]

@@ -2,11 +2,11 @@
 
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "../services/store";
-import { fetchIngredients } from "../services/reducers/ingredientsSlice";
+import { fetchIngredients } from "../services/ingredients/ingredients-slice";
 
 export const IngredientsTest = () => {
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.ingredients);
+  const { ingredients, loading, error } = useSelector((state) => state.ingredients);
 
   useEffect(() => {
     dispatch(fetchIngredients());
@@ -17,7 +17,7 @@ export const IngredientsTest = () => {
 
   return (
     <ul>
-      {items.map((ingredient) => (
+      {ingredients.map((ingredient) => (
         <li key={ingredient._id}>{ingredient.name}</li>
       ))}
     </ul>

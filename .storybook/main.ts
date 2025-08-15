@@ -20,6 +20,7 @@ const config: StorybookConfig = {
         ...(config.resolve.alias || {}),
         '@ui': path.resolve(__dirname, '../src/components/ui'),
         '@components': path.resolve(__dirname, '../src/components'),
+        '@store': path.resolve(__dirname, '../src/services/store.ts'),
       };
     }
     return config;
