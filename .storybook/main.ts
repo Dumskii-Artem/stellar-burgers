@@ -18,9 +18,10 @@ const config: StorybookConfig = {
     if (config.resolve) {
       config.resolve.alias = {
         ...(config.resolve.alias || {}),
-        '@ui': path.resolve(__dirname, '../src/components/ui'),
+        '@api': path.resolve(__dirname, '../src/utils/burger-api.ts'),
         '@components': path.resolve(__dirname, '../src/components'),
         '@store': path.resolve(__dirname, '../src/services/store.ts'),
+        '@ui': path.resolve(__dirname, '../src/components/ui'),
       };
     }
     return config;

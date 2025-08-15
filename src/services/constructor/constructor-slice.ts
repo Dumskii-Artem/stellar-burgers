@@ -40,6 +40,14 @@ export const constructorSlice = createSlice({
       }
     },
 
+    swapIngredient: (state, action) => {
+      console.log(action.payload.first, action.payload.second);
+      const tmp = state.burger.ingredients[action.payload.first];
+      state.burger.ingredients[action.payload.first] =
+        state.burger.ingredients[action.payload.second];
+      state.burger.ingredients[action.payload.second] = tmp;
+    },
+
     removeIngredient(state, action: PayloadAction<string>) {
       state.burger.ingredients = state.burger.ingredients.filter(
         (ing) => ing._id !== action.payload
@@ -57,7 +65,11 @@ export const constructorSlice = createSlice({
 });
 export const { selectBurgerConstructor } = constructorSlice.selectors;
 
-export const { addIngredient, removeIngredient, clearConstructor } =
-  constructorSlice.actions;
+export const {
+  addIngredient,
+  removeIngredient,
+  clearConstructor,
+  swapIngredient
+} = constructorSlice.actions;
 
 export const constructorReducer = constructorSlice.reducer;
