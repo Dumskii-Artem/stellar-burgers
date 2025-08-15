@@ -48,7 +48,8 @@ export const constructorSlice = createSlice({
       state.burger.ingredients[action.payload.second] = tmp;
     },
 
-    removeIngredient(state, action: PayloadAction<string>) {
+    removeIngredient: (state, action) => {
+      console.log(action.payload, '++++++++++++++++++++++++++');
       state.burger.ingredients = state.burger.ingredients.filter(
         (ing) => ing._id !== action.payload
       );
