@@ -46,7 +46,18 @@ export const ingredientsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
+  },
+  selectors: {
+    selectIngredients: (state) => state.ingredients,
+    selectIngredientsLoading: (state) => state.loading,
+    selectIngredientsError: (state) => state.error
   }
 });
+
+export const {
+  selectIngredients,
+  selectIngredientsLoading,
+  selectIngredientsError
+} = ingredientsSlice.selectors;
 
 export const ingredientsReducer = ingredientsSlice.reducer;
