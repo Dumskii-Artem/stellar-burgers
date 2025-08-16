@@ -31,7 +31,9 @@ const App = () => {
     <div className={styles.app}>
       <AppHeader />
       <Routes>
+        {/* done */}
         <Route path='/' element={<ConstructorPage />} />
+        {/* done */}
         <Route path='/feed' element={<Feed />} />
 
         <Route
