@@ -1,22 +1,46 @@
 // src\components\protected-route\protected-route.tsx
 
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import React from 'react';
+import { useSelector } from '@store';
+import {
+  isAuthCheckedSelector,
+  userSelector
+} from '../../services/user/user-slice';
+import { Preloader } from '@ui';
 
-interface ProtectedRouteProps {
+export const ProtectedRoute = ({
+  children
+}: {
   children: React.ReactElement;
-  onlyUnAuth?: boolean; // флаг, нужен ли доступ только неавторизованным
-}
+}) => {
+  const user = useSelector(userSelector);
+  const isAuthChecked = useSelector(isAuthCheckedSelector);
+  const location = useLocation();
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  onlyUnAuth = false
-}) => children;
-// {
-//   //   // Позже тут будет логика проверки авторизации:
-//   //   // const isAuth = useSelector((state) => state.user.isAuth);
-//   //   // if (!isAuth) return <Navigate to="/login" replace />;
-//   return children;
-// };
+  if (!isAuthChecked) return <Preloader />;
+  if (user) return children;
 
-// export default ProtectedRoute;
+  return (
+    <Navigate
+      to='/login'
+      state={{
+        from: {
+          ...location,
+          background: location.state?.background,
+          state: null
+        }
+      }}
+      replace
+    />
+  );
+};
+
+export const UnAuthRoute = ({ children }: { children: React.ReactElement }) => {
+  const user = useSelector(userSelector);
+  const isAuthChecked = useSelector(isAuthCheckedSelector);
+
+  if (!isAuthChecked) return <Preloader />;
+  if (!user) return children;
+  return <Navigate to='/' replace />;
+};

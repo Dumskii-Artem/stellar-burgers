@@ -16,7 +16,10 @@ import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { ProtectedRoute } from '../protected-route/protected-route';
+import {
+  ProtectedRoute,
+  UnAuthRoute
+} from '../protected-route/protected-route';
 
 const App = () => {
   const navigate = useNavigate();
@@ -35,51 +38,55 @@ const App = () => {
         <Route path='/' element={<ConstructorPage />} />
         {/* done */}
         <Route path='/feed' element={<Feed />} />
-
-        <Route
-          path='/login'
-          element={
-            <ProtectedRoute onlyUnAuth>
-              <Login />
-            </ProtectedRoute>
-          }
-        />
+        {/* done */}
         <Route
           path='/register'
           element={
-            <ProtectedRoute onlyUnAuth>
+            <UnAuthRoute>
               <Register />
+            </UnAuthRoute>
+          }
+        />
+        {/* done */}
+        <Route
+          path='/login'
+          element={
+            <UnAuthRoute>
+              <Login />
+            </UnAuthRoute>
+          }
+        />
+
+        <Route
+          path='/profile'
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
+
         <Route
           path='/forgot-password'
           element={
-            <ProtectedRoute onlyUnAuth>
+            <UnAuthRoute>
               <ForgotPassword />
-            </ProtectedRoute>
+            </UnAuthRoute>
           }
         />
         <Route
           path='/reset-password'
           element={
-            <ProtectedRoute onlyUnAuth>
+            <UnAuthRoute>
               <ResetPassword />
-            </ProtectedRoute>
+            </UnAuthRoute>
           }
         />
-        <Route
-          path='/profile'
-          element={
-            <ProtectedRoute onlyUnAuth>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path='/profile/orders'
           element={
-            <ProtectedRoute onlyUnAuth>
+            <ProtectedRoute>
               <ProfileOrders />
             </ProtectedRoute>
           }
