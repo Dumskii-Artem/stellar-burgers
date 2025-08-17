@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { selectOrderByNumber } from '../../services/orders/orders-slice';
 import { getOrderByNumberThunk } from '../../services/orders/actions';
 
+// карточка заказа в модальном окне, при нажатии на заказ в ленте
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();
   const orderNumber = Number(number);
@@ -22,19 +23,8 @@ export const OrderInfo: FC = () => {
     dispatch(getOrderByNumberThunk(orderNumber));
   }, [dispatch]);
 
-  // {
-  //   createdAt: '',
-  //   ingredients: [],
-  //   _id: '',
-  //   status: '',
-  //   name: '',
-  //   updatedAt: 'string',
-  //   number: 0
-  // };
-
   const ingredients: TIngredient[] = useSelector(selectIngredients);
 
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 

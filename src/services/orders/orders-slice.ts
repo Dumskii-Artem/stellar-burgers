@@ -2,7 +2,11 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { getFeedsThunk, getOrderByNumberThunk } from './actions';
+import {
+  getFeedsThunk,
+  getOrderByNumberThunk,
+  postUserBurderThunk
+} from './actions';
 import { TFeedsResponse } from '@api';
 
 export interface OrderState {
@@ -39,7 +43,12 @@ const initialState: OrderState = {
 export const ordersSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    setNewOrder: (state, action) => {
+      state.orderRequest = action.payload;
+      state.newOrder.order = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       // ====== FEED ======
@@ -60,16 +69,36 @@ export const ordersSlice = createSlice({
       .addCase(getOrderByNumberThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.orderByNumber = null; // сброс перед загрузкой
+        state.orderByNumber = null;
       })
       .addCase(getOrderByNumberThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.orderByNumber = action.payload.orders[0];
-        // ⚠️ проверь структуру ответа API
       })
       .addCase(getOrderByNumberThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      // ====== NEW USER ORDER ======
+      .addCase(postUserBurderThunk.pending, (state) => {
+        state.loading = true;
+        state.orderRequest = true;
+        state.error = null;
+      })
+      .addCase(postUserBurderThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orderRequest = false;
+        state.newOrder = {
+          order: action.payload.order,
+          name: action.payload.name
+        };
+      })
+      .addCase(postUserBurderThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.orderRequest = false;
+        state.error = action.payload as string;
+        console.log(action.payload);
       });
   },
   selectors: {
@@ -83,9 +112,6 @@ export const ordersSlice = createSlice({
   }
 });
 
-// export const { addIngredient, removeIngredient, clearConstructor } =
-//   constructorSlice.actions;
-
 export const {
   selectFeedOrders,
   selectOrdersLoading,
@@ -97,68 +123,4 @@ export const {
 } = ordersSlice.selectors;
 
 export const ordersReducer = ordersSlice.reducer;
-
-// import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
-// import { TConstructorIngredient, TIngredient } from '@utils-types';
-
-// interface ConstructorState {
-//   bun: TConstructorIngredient | null;
-//   ingredients: TConstructorIngredient[];
-// }
-
-// const initialState: ConstructorState = {
-//   bun: null,
-//   ingredients: [],
-// };
-
-// export const constructorSlice = createSlice({
-//   name: 'constructor',
-//   initialState,
-//   reducers: {
-//     addIngredient: {
-//       reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
-//         // state.ingredients.push(action.payload);
-//         if (action.payload.type === 'bun') {
-//           state.bun = action.payload;
-//         } else {
-//           state.ingredients.push(action.payload);
-//         }
-//       },
-//       prepare: (ingredient: TIngredient) => {
-//         const id = nanoid();
-//         return { payload: { ...ingredient, id } };
-//       }
-//     },
-
-//     // setBun(state, action: PayloadAction<TConstructorIngredient>) {
-//     //   state.bun = action.payload;
-//     // },
-
-//     removeIngredient(state, action: PayloadAction<string>) {
-//       state.ingredients = state.ingredients.filter(
-//         (ing) => ing._id !== action.payload
-//       );
-//     },
-
-//     // setBurgerConstructor: {
-//     //   reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
-
-//     //   },
-//     //   prepare: (ingredient: TIngredient) => {
-//     //     const id = nanoid();
-//     //     return { payload: { ...ingredient, id } };
-//     //   }
-//     // },
-
-//     clearConstructor(state) {
-//       state.bun = null;
-//       state.ingredients = [];
-//     },
-//   },
-// });
-
-// // export const { setBun, addIngredient, removeIngredient, clearConstructor } =
-// export const { addIngredient, removeIngredient, clearConstructor } =
-//   constructorSlice.actions;
-
-// export const constructorReducer = constructorSlice.reducer;
+export const { setNewOrder } = ordersSlice.actions;

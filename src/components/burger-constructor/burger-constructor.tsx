@@ -4,16 +4,22 @@ import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
-import { useSelector, RootState } from '@store';
+import { useSelector, RootState, useDispatch } from '@store';
 import {
   selectNewOrder,
-  selectOrderRequest
+  selectOrderRequest,
+  setNewOrder
 } from '../../services/orders/orders-slice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { postUserBurderThunk } from '../../services/orders/actions';
+import { selectBurgerConstructor } from '../../services/constructor/constructor-slice';
 
 export const BurgerConstructor: FC = () => {
-  const burgerItems = useSelector(
-    (state: RootState) => state.myconstructor.burger
-  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const userBurger = useSelector(selectBurgerConstructor);
 
   // ждем ответа сервера
   const orderRequest = useSelector(selectOrderRequest);
@@ -21,25 +27,65 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(selectNewOrder).order;
 
   const onOrderClick = () => {
-    if (!burgerItems.bun || orderRequest) return;
+    if (!userBurger.bun || orderRequest) {
+      return;
+    }
+
+    // if (!user) {
+    //   return navigate('/login', {
+    //     replace: true,
+    //     state: {
+    //       from: {
+    //         ...location,
+    //         background: location.state?.background,
+    //         state: null
+    //       }
+    //     }
+    //   });
+    // } else {
+
+    // const from = location.state?.from || { pathname: '/' };
+    const from = { pathname: '/' };
+    // const backgroundLocation = location.state?.from?.background || null;
+    const backgroundLocation = null;
+
+    const itemsId = [
+      userBurger.bun._id,
+      ...userBurger.ingredients.map((ingredient) => ingredient._id),
+      userBurger.bun._id
+    ];
+
+    dispatch(postUserBurderThunk(itemsId));
+
+    // dispatch(postUserBurderThunk(itemsId)).then(() =>
+    //   dispatch(clearBurgerConstructor())
+    // );
+    return navigate(from, {
+      replace: true,
+      state: { background: backgroundLocation }
+    });
+    // }
   };
-  const closeOrderModal = () => {};
+
+  const closeOrderModal = () => {
+    dispatch(setNewOrder(false));
+  };
 
   const price = useMemo(
     () =>
-      (burgerItems.bun ? burgerItems.bun.price * 2 : 0) +
-      burgerItems.ingredients.reduce(
+      (userBurger.bun ? userBurger.bun.price * 2 : 0) +
+      userBurger.ingredients.reduce(
         (s: number, v: TConstructorIngredient) => s + v.price,
         0
       ),
-    [burgerItems]
+    [userBurger]
   );
 
   return (
     <BurgerConstructorUI
       price={price}
       orderRequest={orderRequest}
-      constructorItems={burgerItems}
+      constructorItems={userBurger}
       orderModalData={orderModalData}
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}

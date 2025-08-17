@@ -1,3 +1,4 @@
+// src\components\order-card\order-card.tsx
 import { FC, memo, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -9,12 +10,12 @@ import { selectIngredients } from '../../services/ingredients/ingredients-slice'
 
 const maxIngredients = 6;
 
+// карточка одного ордера в ленте
 export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
   const location = useLocation();
 
   /** TODO: взять переменную из стора */
   const ingredients: TIngredient[] = useSelector(selectIngredients);
-  // const ingredients = : TIngredient[] = [];
 
   const orderInfo = useMemo(() => {
     if (!ingredients.length) return null;
