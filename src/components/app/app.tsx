@@ -21,14 +21,18 @@ import {
   UnAuthRoute
 } from '../protected-route/protected-route';
 import { useEffect } from 'react';
-import { useDispatch } from '@store';
+import { useDispatch, useSelector } from '@store';
 import { checkUserAuth, setIsAuthChecked } from '../../services/user/actions';
+import { TIngredient } from '@utils-types';
+import { selectIngredients } from '../../services/ingredients/ingredients-slice';
+import { getIngredientsThunk } from '../../services/ingredients/actions';
 
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
+  const ingredients: TIngredient[] = useSelector(selectIngredients);
 
   const onCloseModal = () => {
     navigate(-1);
@@ -38,10 +42,16 @@ const App = () => {
     dispatch(checkUserAuth()).finally(() => dispatch(setIsAuthChecked(true)));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!ingredients.length) {
+      dispatch(getIngredientsThunk());
+    }
+  }, [dispatch, ingredients.length]);
+
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route
@@ -84,7 +94,6 @@ const App = () => {
             </UnAuthRoute>
           }
         />
-
         <Route
           path='/profile/orders'
           element={
@@ -93,6 +102,18 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        // Для открытия страницы без модального окна, при копировании ссылки
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <OrderInfo />
+            </ProtectedRoute>
+          }
+        />
+        <Route path='*' element={<NotFound404 />} />
       </Routes>
 
       {/* Модальные маршруты */}
@@ -110,7 +131,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title={''} onClose={onCloseModal}>
+              <Modal title={'Детали ингредиента'} onClose={onCloseModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -126,8 +147,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
-          <Route path='*' element={<NotFound404 />} />
         </Routes>
       )}
     </div>

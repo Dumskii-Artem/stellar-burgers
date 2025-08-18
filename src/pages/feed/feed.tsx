@@ -7,7 +7,6 @@ import {
   selectFeedOrders,
   selectOrdersLoading
 } from '../../services/orders/orders-slice';
-import { getIngredientsThunk } from '../../services/ingredients/actions';
 import { getFeedsThunk } from '../../services/orders/actions';
 
 export const Feed: FC = () => {
@@ -15,7 +14,6 @@ export const Feed: FC = () => {
 
   useEffect(() => {
     dispatch(getFeedsThunk());
-    dispatch(getIngredientsThunk());
   }, [dispatch]);
 
   /** TODO: взять переменную из стора */

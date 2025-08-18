@@ -1,15 +1,13 @@
 // src\pages\profile-orders\profile-orders.tsx
 import { ProfileOrdersUI } from '@ui-pages';
-import { TIngredient, TOrder } from '@utils-types';
+import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import {
   selectNewOrder,
   selectUserOrders
 } from '../../services/orders/orders-slice';
 import { useDispatch, useSelector } from '@store';
-import { getIngredientsThunk } from '../../services/ingredients/actions';
 import { selectUser } from '../../services/user/user-slice';
-import { selectIngredients } from '../../services/ingredients/ingredients-slice';
 import { getUserOrdersThunk } from '../../services/orders/actions';
 
 export const ProfileOrders: FC = () => {
@@ -18,7 +16,6 @@ export const ProfileOrders: FC = () => {
   /** TODO: взять переменную из стора */
   const orders: TOrder[] = useSelector(selectUserOrders);
   const user = useSelector(selectUser);
-  const ingredients: TIngredient[] = useSelector(selectIngredients);
   const newOrder = useSelector(selectNewOrder);
 
   // идея такая.
@@ -30,12 +27,6 @@ export const ProfileOrders: FC = () => {
       dispatch(getUserOrdersThunk());
     }
   }, [dispatch, user, newOrder]);
-
-  useEffect(() => {
-    if (ingredients.length === 0) {
-      dispatch(getIngredientsThunk());
-    }
-  }, [dispatch, ingredients.length]);
 
   return <ProfileOrdersUI orders={orders} />;
 };

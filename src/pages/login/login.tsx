@@ -6,8 +6,8 @@ import { selectUserLoading } from '../../services/user/user-slice';
 import { Preloader } from '@ui';
 
 export const Login: FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('artem812@mail.ru');
+  const [password, setPassword] = useState('123456789');
   const dispatch = useDispatch();
 
   const handleSubmit = (e: SyntheticEvent) => {
@@ -18,7 +18,6 @@ export const Login: FC = () => {
   // это как-то не видно, что срабатывает
   const loading = useSelector(selectUserLoading);
   if (loading) return <Preloader />;
-  setTimeout(() => {}, 2000);
 
   return (
     <LoginUI

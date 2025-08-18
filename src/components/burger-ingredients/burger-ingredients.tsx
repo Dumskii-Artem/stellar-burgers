@@ -5,20 +5,11 @@ import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useDispatch, useSelector } from '@store';
-import { getIngredientsThunk } from '../../services/ingredients/actions';
+import { useSelector } from '@store';
 import { selectIngredients } from '../../services/ingredients/ingredients-slice';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch = useDispatch();
   const ingredients: TIngredient[] = useSelector(selectIngredients);
-
-  // Загружаем данные при монтировании
-  useEffect(() => {
-    if (!ingredients.length) {
-      dispatch(getIngredientsThunk());
-    }
-  }, [dispatch, ingredients.length]);
 
   // Разделяем ингредиенты по типу
   const buns = ingredients.filter((ing: TIngredient) => ing.type === 'bun');

@@ -14,13 +14,13 @@ export const ProtectedRoute = ({
 }: {
   children: React.ReactElement;
 }) => {
-  const user = useSelector(selectUser);
   const isAuthChecked = useSelector(selectIsAuthChecked);
+  const user = useSelector(selectUser);
   const location = useLocation();
 
-  if (!isAuthChecked) return <Preloader />;
-  if (user) return children;
+  console.log('isAuthChecked', isAuthChecked);
 
+  if (user) return children;
   return (
     <Navigate
       to='/login'
@@ -37,10 +37,16 @@ export const ProtectedRoute = ({
 };
 
 export const UnAuthRoute = ({ children }: { children: React.ReactElement }) => {
-  const user = useSelector(selectUser);
   const isAuthChecked = useSelector(selectIsAuthChecked);
+  const user = useSelector(selectUser);
+  const location = useLocation();
+  const backgroundLocation = location.state?.from?.background || null;
+  const from = location.state?.from || { pathname: '/' };
 
   if (!isAuthChecked) return <Preloader />;
   if (!user) return children;
-  return <Navigate to='/' replace />;
+
+  return (
+    <Navigate replace to={from} state={{ background: backgroundLocation }} />
+  );
 };
