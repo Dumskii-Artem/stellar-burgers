@@ -4,7 +4,7 @@ import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
-import { useSelector, RootState, useDispatch } from '@store';
+import { useSelector, useDispatch } from '@store';
 import {
   selectNewOrder,
   selectOrderRequest,
@@ -12,12 +12,17 @@ import {
 } from '../../services/orders/orders-slice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { postUserBurderThunk } from '../../services/orders/actions';
-import { selectBurgerConstructor } from '../../services/constructor/constructor-slice';
+import {
+  clearBurger,
+  selectBurgerConstructor
+} from '../../services/constructor/constructor-slice';
+import { selectUser } from '../../services/user/user-slice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useSelector(selectUser);
 
   const userBurger = useSelector(selectBurgerConstructor);
 
@@ -31,40 +36,35 @@ export const BurgerConstructor: FC = () => {
       return;
     }
 
-    // if (!user) {
-    //   return navigate('/login', {
-    //     replace: true,
-    //     state: {
-    //       from: {
-    //         ...location,
-    //         background: location.state?.background,
-    //         state: null
-    //       }
-    //     }
-    //   });
-    // } else {
+    if (!user) {
+      return navigate('/login', {
+        replace: true,
+        state: {
+          from: {
+            ...location,
+            background: location.state?.background,
+            state: null
+          }
+        }
+      });
+    } else {
+      const from = location.state?.from || { pathname: '/' };
+      const backgroundLocation = location.state?.from?.background || null;
 
-    // const from = location.state?.from || { pathname: '/' };
-    const from = { pathname: '/' };
-    // const backgroundLocation = location.state?.from?.background || null;
-    const backgroundLocation = null;
+      const itemsId = [
+        userBurger.bun._id,
+        ...userBurger.ingredients.map((ingredient) => ingredient._id),
+        userBurger.bun._id
+      ];
 
-    const itemsId = [
-      userBurger.bun._id,
-      ...userBurger.ingredients.map((ingredient) => ingredient._id),
-      userBurger.bun._id
-    ];
-
-    dispatch(postUserBurderThunk(itemsId));
-
-    // dispatch(postUserBurderThunk(itemsId)).then(() =>
-    //   dispatch(clearBurgerConstructor())
-    // );
-    return navigate(from, {
-      replace: true,
-      state: { background: backgroundLocation }
-    });
-    // }
+      dispatch(postUserBurderThunk(itemsId)).then(() =>
+        dispatch(clearBurger())
+      );
+      return navigate(from, {
+        replace: true,
+        state: { background: backgroundLocation }
+      });
+    }
   };
 
   const closeOrderModal = () => {

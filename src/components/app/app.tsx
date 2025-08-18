@@ -20,8 +20,12 @@ import {
   ProtectedRoute,
   UnAuthRoute
 } from '../protected-route/protected-route';
+import { useEffect } from 'react';
+import { useDispatch } from '@store';
+import { checkUserAuth, setIsAuthChecked } from '../../services/user/actions';
 
 const App = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
@@ -30,15 +34,16 @@ const App = () => {
     navigate(-1);
   };
 
+  useEffect(() => {
+    dispatch(checkUserAuth()).finally(() => dispatch(setIsAuthChecked(true)));
+  }, [dispatch]);
+
   return (
     <div className={styles.app}>
       <AppHeader />
       <Routes>
-        {/* done */}
         <Route path='/' element={<ConstructorPage />} />
-        {/* done */}
         <Route path='/feed' element={<Feed />} />
-        {/* done */}
         <Route
           path='/register'
           element={
@@ -47,7 +52,6 @@ const App = () => {
             </UnAuthRoute>
           }
         />
-        {/* done */}
         <Route
           path='/login'
           element={
@@ -56,7 +60,6 @@ const App = () => {
             </UnAuthRoute>
           }
         />
-
         <Route
           path='/profile'
           element={
@@ -65,7 +68,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/forgot-password'
           element={

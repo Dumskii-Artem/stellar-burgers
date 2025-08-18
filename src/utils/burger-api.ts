@@ -110,8 +110,7 @@ export const orderBurgerApi = (data: string[]) =>
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-      authorization: `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OWJiMjNmNjczMDg2MDAxYmE4Mjc5YyIsImlhdCI6MTc1NTM3OTMxNCwiZXhwIjoxNzU1MzgwNTE0fQ.bEP-tnH7EOdn5SgTdvqm4nqU3ixCHzbqBE0nhZBIfcE"`
-      // authorization: getCookie('accessToken')
+      authorization: getCookie('accessToken')
     } as HeadersInit,
     body: JSON.stringify({
       ingredients: data

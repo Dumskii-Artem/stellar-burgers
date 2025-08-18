@@ -1,10 +1,41 @@
+// src\pages\profile-orders\profile-orders.tsx
 import { ProfileOrdersUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
-import { FC } from 'react';
+import { TIngredient, TOrder } from '@utils-types';
+import { FC, useEffect } from 'react';
+import {
+  selectNewOrder,
+  selectUserOrders
+} from '../../services/orders/orders-slice';
+import { useDispatch, useSelector } from '@store';
+import { getIngredientsThunk } from '../../services/ingredients/actions';
+import { selectUser } from '../../services/user/user-slice';
+import { selectIngredients } from '../../services/ingredients/ingredients-slice';
+import { getUserOrdersThunk } from '../../services/orders/actions';
 
 export const ProfileOrders: FC = () => {
+  const dispatch = useDispatch();
+
   /** TODO: взять переменную из стора */
-  const orders: TOrder[] = [];
+  const orders: TOrder[] = useSelector(selectUserOrders);
+  const user = useSelector(selectUser);
+  const ingredients: TIngredient[] = useSelector(selectIngredients);
+  const newOrder = useSelector(selectNewOrder);
+
+  // идея такая.
+  // При первом входе → user появился → заказы загрузились.
+  // При логауте → user = null → эффект не сработает.
+  // При логине другим юзером → user снова появился → заказы обновились.
+  useEffect(() => {
+    if (user) {
+      dispatch(getUserOrdersThunk());
+    }
+  }, [dispatch, user, newOrder]);
+
+  useEffect(() => {
+    if (ingredients.length === 0) {
+      dispatch(getIngredientsThunk());
+    }
+  }, [dispatch, ingredients.length]);
 
   return <ProfileOrdersUI orders={orders} />;
 };

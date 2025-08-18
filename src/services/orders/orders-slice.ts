@@ -5,6 +5,7 @@ import { TOrder } from '@utils-types';
 import {
   getFeedsThunk,
   getOrderByNumberThunk,
+  getUserOrdersThunk,
   postUserBurderThunk
 } from './actions';
 import { TFeedsResponse } from '@api';
@@ -98,7 +99,20 @@ export const ordersSlice = createSlice({
         state.loading = false;
         state.orderRequest = false;
         state.error = action.payload as string;
-        console.log(action.payload);
+      })
+
+      // ====== GET USER ORDERS ======
+      .addCase(getUserOrdersThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserOrdersThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userOrders = action.payload;
+      })
+      .addCase(getUserOrdersThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
   selectors: {
@@ -107,8 +121,8 @@ export const ordersSlice = createSlice({
     selectOrderByNumber: (state) => state.orderByNumber,
     selectFeed: (state) => state.feed,
     selectNewOrder: (state) => state.newOrder,
-    selectOrderRequest: (state) => state.orderRequest
-    // selectUserOrders: (state) => state.userOrders
+    selectOrderRequest: (state) => state.orderRequest,
+    selectUserOrders: (state) => state.userOrders
   }
 });
 
@@ -118,8 +132,8 @@ export const {
   selectOrderByNumber,
   selectFeed,
   selectNewOrder,
-  selectOrderRequest
-  //   selectUserOrders
+  selectOrderRequest,
+  selectUserOrders
 } = ordersSlice.selectors;
 
 export const ordersReducer = ordersSlice.reducer;

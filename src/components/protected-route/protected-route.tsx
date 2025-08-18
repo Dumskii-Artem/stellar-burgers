@@ -4,8 +4,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import { useSelector } from '@store';
 import {
-  isAuthCheckedSelector,
-  userSelector
+  selectIsAuthChecked,
+  selectUser
 } from '../../services/user/user-slice';
 import { Preloader } from '@ui';
 
@@ -14,8 +14,8 @@ export const ProtectedRoute = ({
 }: {
   children: React.ReactElement;
 }) => {
-  const user = useSelector(userSelector);
-  const isAuthChecked = useSelector(isAuthCheckedSelector);
+  const user = useSelector(selectUser);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
   const location = useLocation();
 
   if (!isAuthChecked) return <Preloader />;
@@ -37,8 +37,8 @@ export const ProtectedRoute = ({
 };
 
 export const UnAuthRoute = ({ children }: { children: React.ReactElement }) => {
-  const user = useSelector(userSelector);
-  const isAuthChecked = useSelector(isAuthCheckedSelector);
+  const user = useSelector(selectUser);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
 
   if (!isAuthChecked) return <Preloader />;
   if (!user) return children;
