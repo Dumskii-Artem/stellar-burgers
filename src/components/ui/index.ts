@@ -1,3 +1,5 @@
+// src\components\ui\index.ts
+
 export * from './app-header';
 export * from './burger-constructor';
 export * from './burger-constructor-element';

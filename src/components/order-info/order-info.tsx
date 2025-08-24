@@ -1,23 +1,30 @@
-import { FC, useMemo } from 'react';
+// src\components\order-info\order-info.tsx
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useDispatch, useSelector } from '@store';
+import { selectIngredients } from '../../services/ingredients/ingredients-slice';
+import { useParams } from 'react-router-dom';
+import { selectOrderByNumber } from '../../services/orders/orders-slice';
+import { getOrderByNumberThunk } from '../../services/orders/actions';
 
+// карточка заказа в модальном окне, при нажатии на заказ в ленте
 export const OrderInfo: FC = () => {
+  const { number } = useParams<{ number: string }>();
+  const orderNumber = Number(number);
+
   /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const orderData = useSelector(selectOrderByNumber);
 
-  const ingredients: TIngredient[] = [];
+  const dispatch = useDispatch();
 
-  /* Готовим данные для отображения */
+  useEffect(() => {
+    dispatch(getOrderByNumberThunk(orderNumber));
+  }, []);
+
+  const ingredients: TIngredient[] = useSelector(selectIngredients);
+
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 

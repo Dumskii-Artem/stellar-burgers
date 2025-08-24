@@ -17,3 +17,23 @@
 ## Важно:
 
 Для корректной работы запросов к серверу необходимо добавить переменную BURGER_API_URL в окружение. Сама ссылка находится в файле `.env.example`.
+
+для локального запуска нужно
+* удалить строку с homepage в файде package.json
+* посмотреть порт на котором запускается в конце файла webpack.config.js
+* в корневой папке создать файл .env и скопировать туда содержимое из .env.example
+
+```
+npm install
+npm i react-router-dom
+npm i -D @types/react-router-dom
+npm install @reduxjs/toolkit react-redux
+npm start
+```
+
+
+StoreBook
+```
+npx storybook@latest init
+npm run storybook
+```
