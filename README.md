@@ -57,3 +57,11 @@ npm install ts-node --save-dev
 ```
 npx cypress open
 ```
+
+### Настройка Jest
+
+```
+npm install --save-dev jest
+npm install --save-dev ts-jest ts-node
+npm install --save-dev @jest/globals
+```
