@@ -1,4 +1,4 @@
-# Проектная работа 11-го спринта
+# Проектная работа 11 и 12-го (в работе) спринтов
 
 [Макет](<https://www.figma.com/file/vIywAvqfkOIRWGOkfOnReY/React-Fullstack_-Проектные-задачи-(3-месяца)_external_link?type=design&node-id=0-1&mode=design>)
 
@@ -14,14 +14,17 @@
 
 4. Настройте авторизацию и создайте защищённые роуты.
 
-## Важно:
+## 11 спринт:
 
-Для корректной работы запросов к серверу необходимо добавить переменную BURGER_API_URL в окружение. Сама ссылка находится в файле `.env.example`.
+**Для корректной работы запросов к серверу необходимо** добавить переменную BURGER_API_URL в окружение.
+Для этого содержимое файла `.env.example` нужно скопировать в файл `.env`
 
-для локального запуска нужно
+для локального запуска
 * удалить строку с homepage в файде package.json
 * посмотреть порт на котором запускается в конце файла webpack.config.js
 * в корневой папке создать файл .env и скопировать туда содержимое из .env.example
+
+после этого выполнить следующие команды
 
 ```
 npm install
@@ -36,4 +39,29 @@ StoreBook
 ```
 npx storybook@latest init
 npm run storybook
+```
+
+## 12 спринт:
+
+### Настройка Cypress
+```
+npm install cypress --save-dev 
+npm install ts-node --save-dev
+```
+одновременно запускаем 
+* приложение stella-burgers в терминале
+```
+ npm start
+ ```
+* cypress в vscode или в другом терминале
+```
+npx cypress open
+```
+
+### Настройка Jest
+
+```
+npm install --save-dev jest
+npm install --save-dev ts-jest ts-node
+npm install --save-dev @jest/globals
 ```

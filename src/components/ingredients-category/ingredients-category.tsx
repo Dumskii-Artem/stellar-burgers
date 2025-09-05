@@ -11,12 +11,6 @@ export const IngredientsCategory = forwardRef<
 >(({ title, titleRef, ingredients }, ref) => {
   /** TODO: взять переменную из стора */
   const burgerConstructor = useSelector(selectBurgerConstructor);
-  // const burgerConstructor = {
-  //   bun: {
-  //     _id: ''
-  //   },
-  //   ingredients: []
-  // };
 
   const ingredientsCounters = useMemo(() => {
     const { bun, ingredients } = burgerConstructor;

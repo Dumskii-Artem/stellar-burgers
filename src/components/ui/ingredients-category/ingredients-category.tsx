@@ -1,3 +1,4 @@
+// src\components\ui\ingredients-category\ingredients-category.tsx
 import styles from './ingredients-category.module.css';
 import { forwardRef } from 'react';
 import { TIngredientsCategoryUIProps } from './type';

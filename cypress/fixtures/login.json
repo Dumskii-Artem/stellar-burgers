@@ -1,0 +1,9 @@
+{
+    "success": true,
+    "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTFmNGFiNjczMDg2MDAxYmE4MzRjYSIsImlhdCI6MTc1NjgyNzQ2OCwiZXhwIjoxNzU2ODI4NjY4fQ.aABOW6Q7aWQmGXPTumYTjSLmmFGg-kYQRX4LLyd7MoE",
+    "refreshToken": "aa263c2275d8389d90f149845b54142d62026ce2d750d94d4637a7dfc18041ea38c91a1eb4150c3f",
+    "user": {
+        "email": "artem88888@mail.ru",
+        "name": "Artem"
+    }
+}
